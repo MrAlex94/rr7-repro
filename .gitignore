@@ -1,0 +1,14 @@
+node_modules
+dist
+.wrangler
+/.cache
+/build
+/public/build
+.env
+/functions/\[\[path\]\].js
+/functions/\[\[path\]\].js.map
+/functions/metafile.*
+/functions/version.txt
+.dev.vars
+.DS_Store
+.react-router/
