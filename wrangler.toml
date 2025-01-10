@@ -4,7 +4,7 @@ compatibility_date = "2024-09-02"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-BUN_VERSION = "1.1.40"
+BUN_VERSION = "1.1.42"
 CLERK_PUBLISHABLE_KEY = ""
 CLERK_SIGN_IN_URL = ""
 CLERK_SIGN_UP_URL = ""
