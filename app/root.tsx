@@ -1,5 +1,3 @@
-import { ClerkProvider } from "@clerk/react-router";
-import { rootAuthLoader } from "@clerk/react-router/ssr.server";
 import clsx from "clsx";
 import {
 	Links,
@@ -19,14 +17,8 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export async function loader(args: Route.LoaderArgs) {
-	return rootAuthLoader(
-		args,
-		async ({ request }) => {
-			const { getTheme } = await themeSessionResolver(request);
-			return { theme: getTheme() };
-		},
-		{ loadUser: true },
-	);
+	const { getTheme } = await themeSessionResolver(args.request);
+	return { theme: getTheme() };
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -66,13 +58,11 @@ export default function App({ loaderData }: Route.ComponentProps) {
 			: null;
 
 	return (
-		<ClerkProvider loaderData={loaderData}>
-			<ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
-				<Layout>
-					<Outlet />
-				</Layout>
-			</ThemeProvider>
-		</ClerkProvider>
+		<ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
+			<Layout>
+				<Outlet />
+			</Layout>
+		</ThemeProvider>
 	);
 }
 

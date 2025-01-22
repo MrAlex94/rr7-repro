@@ -7,6 +7,9 @@ const schema = z.object({
 	CLERK_PUBLISHABLE_KEY: z.string(),
 	CLERK_SIGN_UP_URL: z.string(),
 	CLERK_SIGN_IN_URL: z.string(),
+	CLERK_OCLIENT_ID: z.string(),
+	CLERK_OCLIENT_SECRET: z.string(),
+	CLERK_URL: z.string(),
 });
 
 declare module "react-router" {
@@ -32,6 +35,9 @@ export function getLoadContext({
 		CLERK_PUBLISHABLE_KEY,
 		CLERK_SIGN_UP_URL,
 		CLERK_SIGN_IN_URL,
+		CLERK_OCLIENT_ID,
+		CLERK_OCLIENT_SECRET,
+		CLERK_URL,
 	} = schema.parse(context.cloudflare.env);
 
 	return {
@@ -41,6 +47,9 @@ export function getLoadContext({
 			CLERK_PUBLISHABLE_KEY,
 			CLERK_SIGN_UP_URL,
 			CLERK_SIGN_IN_URL,
+			CLERK_OCLIENT_ID,
+			CLERK_OCLIENT_SECRET,
+			CLERK_URL,
 		},
 	};
 }
