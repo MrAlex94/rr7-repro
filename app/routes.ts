@@ -7,6 +7,7 @@ import {
 
 export default [
 	index("routes/_index.tsx"),
+	route("/debug", "auth/routes/debug.tsx"),
 	route("/login", "auth/routes/auth.login.route.tsx"),
 	route("/logout", "auth/routes/auth.logout.route.tsx"),
 	route("/auth/callback", "auth/routes/auth.callback.route.tsx"),
