@@ -15,9 +15,6 @@ export default defineConfig(({ mode }) => {
 			target: "webworker",
 			noExternal: ["isbot"],
 		},
-		optimizeDeps: {
-			include: ["react", "react-dom", "react-router"],
-		},
 		plugins: [
 			cloudflareDevProxy({ getLoadContext }),
 			reactRouter(),

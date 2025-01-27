@@ -26,20 +26,17 @@ export const authenticator = new Authenticator<User>();
 
 const strategy = new OAuth2Strategy(
 	{
-		clientId: "###",
-		clientSecret: "###",
-		redirectURI: "http://localhost:5173/auth/callback",
-		authorizationEndpoint: "https://clerk.your-domain.com/oauth/authorize",
-		tokenEndpoint: "https://clerk.your-domain.com/oauth/token",
+		clientId: "",
+		clientSecret: "",
+		redirectURI: "",
+		authorizationEndpoint: "",
+		tokenEndpoint: "",
 		scopes: ["profile", "email"],
 	},
 	async ({ tokens, request }) => {
-		const response = await fetch(
-			"https://clerk.your-domain.com/oauth/userinfo",
-			{
-				headers: { Authorization: `Bearer ${tokens.accessToken()}` },
-			},
-		);
+		const response = await fetch("", {
+			headers: { Authorization: `Bearer ${tokens.accessToken()}` },
+		});
 
 		const userInfo = (await response.json()) as ClerkUserInfo;
 

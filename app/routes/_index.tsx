@@ -1,7 +1,7 @@
 import { createClerkClient } from "@clerk/react-router/api.server";
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { type MetaFunction, useLoaderData, useNavigation } from "react-router";
-import type { Route } from "./+types/root";
+import type { Route } from "./+types/_index";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "Repro" }, { name: "description", content: "Repro" }];

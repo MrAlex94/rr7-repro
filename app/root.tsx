@@ -7,9 +7,7 @@ import {
 	ScrollRestoration,
 	isRouteErrorResponse,
 } from "react-router";
-import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "~/lib/theme";
 import stylesheet from "~/style.css?url";
-import { themeSessionResolver } from "~/theme-session.server";
 import type { Route } from "./+types/root";
 
 export const links: Route.LinksFunction = () => [
@@ -17,15 +15,12 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export async function loader(args: Route.LoaderArgs) {
-	const { getTheme } = await themeSessionResolver(args.request);
-	return { theme: getTheme() };
+	return null;
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
-	const [theme] = useTheme();
-
 	return (
-		<html lang="en" className={clsx(theme)}>
+		<html lang="en">
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -34,7 +29,6 @@ function Layout({ children }: { children: React.ReactNode }) {
 				<meta name="theme-color" content="#ffffff" />
 				<Meta />
 				<Links />
-				<PreventFlashOnWrongTheme ssrTheme={Boolean(theme)} />
 			</head>
 			<body className="flex min-h-screen w-full flex-col">
 				{children}
@@ -50,19 +44,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
 		return null;
 	}
 
-	const theme =
-		loaderData &&
-		"theme" in loaderData &&
-		typeof loaderData.theme !== "undefined"
-			? loaderData.theme
-			: null;
-
 	return (
-		<ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
-			<Layout>
-				<Outlet />
-			</Layout>
-		</ThemeProvider>
+		<Layout>
+			<Outlet />
+		</Layout>
 	);
 }
 

@@ -12,7 +12,7 @@
 		"format": "bunx @biomejs/biome check --fix --unsafe *"
 	},
 	"dependencies": {
-		"@clerk/react-router": "^0.2.3",
+		"@clerk/react-router": "^1.0.1",
 		"@react-router/cloudflare": "^7.1.3",
 		"clsx": "^2.1.1",
 		"isbot": "^5.1.21",
@@ -21,7 +21,7 @@
 		"react-router": "^7.1.3",
 		"react-router-dom": "^7.1.3",
 		"remix-auth-oauth2": "^3.2.2",
-		"wrangler": "^3.104.0",
+		"wrangler": "^3.105.1",
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
@@ -29,10 +29,10 @@
 		"@react-router/dev": "^7.1.3",
 		"@react-router/fs-routes": "^7.1.3",
 		"@tailwindcss/typography": "^0.5.16",
-		"@tailwindcss/vite": "4.0.0-beta.9",
-		"@types/react": "^19.0.7",
+		"@tailwindcss/vite": "4.0.0",
+		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3",
-		"tailwindcss": "4.0.0-beta.9",
+		"tailwindcss": "4.0.0",
 		"tailwindcss-animate": "^1.0.7",
 		"vite": "^6.0.11",
 		"vite-tsconfig-paths": "^5.1.4"
