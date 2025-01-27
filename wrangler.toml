@@ -4,8 +4,9 @@ compatibility_date = "2024-09-02"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-BUN_VERSION = "1.1.45"
-CLERK_PUBLISHABLE_KEY = ""
-CLERK_SIGN_IN_URL = ""
-CLERK_SIGN_UP_URL = ""
+BUN_VERSION = "1.2.0"
+APP_URL = "http://localhost:5173/"
+CLERK_CLIENT_ID = "ZW4PBZca4acsk0vR"
+CLERK_ISSUER = "civil-lemur-19.clerk.accounts.dev"
+CLERK_PUBLISHABLE_KEY = "pk_test_Y2l2aWwtbGVtdXItMTkuY2xlcmsuYWNjb3VudHMuZGV2JA"
 NODE_VERSION = "latest"

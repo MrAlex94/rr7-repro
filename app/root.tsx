@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import {
 	Links,
 	Meta,
@@ -40,9 +39,9 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
-	if (!loaderData) {
-		return null;
-	}
+	// if (!loaderData) {
+	// 	return null;
+	// }
 
 	return (
 		<Layout>

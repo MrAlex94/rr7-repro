@@ -1,12 +1,12 @@
 import { type LoaderFunctionArgs, redirect } from "react-router";
-import { authenticator } from "~/auth/auth.server";
-import { sessionStorage } from "~/auth/session.server";
+import { createAuthenticator } from "~/auth/auth.server";
+import { getSessionStorage } from "~/auth/session.server";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	console.log("🚀 | loader | request:", request.url);
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+	const { authenticator } = createAuthenticator(context);
 	try {
 		const user = await authenticator.authenticate("clerk", request);
-		console.log("🚀 | loader | user:", user);
+		const sessionStorage = getSessionStorage(context);
 		const session = await sessionStorage.getSession(
 			request.headers.get("cookie"),
 		);

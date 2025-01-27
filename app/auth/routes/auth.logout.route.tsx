@@ -1,7 +1,8 @@
 import { type ActionFunctionArgs, redirect } from "react-router";
-import { sessionStorage } from "~/auth/session.server";
+import { getSessionStorage } from "~/auth/session.server";
 
-export const loader = async ({ request }: ActionFunctionArgs) => {
+export const loader = async ({ request, context }: ActionFunctionArgs) => {
+	const sessionStorage = getSessionStorage(context);
 	const session = await sessionStorage.getSession(
 		request.headers.get("cookie"),
 	);

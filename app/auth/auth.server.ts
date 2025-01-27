@@ -1,6 +1,8 @@
 import { redirect } from "react-router";
+import type { AppLoadContext } from "react-router";
 import { Authenticator } from "remix-auth";
 import { OAuth2Strategy } from "remix-auth-oauth2";
+import { getSessionStorage } from "./session.server";
 
 interface ClerkUserInfo {
 	user_id: string;
@@ -22,86 +24,102 @@ export type User = {
 	};
 };
 
-export const authenticator = new Authenticator<User>();
+export function createAuthenticator(context: AppLoadContext) {
+	const authenticator = new Authenticator<User>();
 
-const strategy = new OAuth2Strategy(
-	{
-		clientId: "",
-		clientSecret: "",
-		redirectURI: "",
-		authorizationEndpoint: "",
-		tokenEndpoint: "",
-		scopes: ["profile", "email"],
-	},
-	async ({ tokens, request }) => {
-		const response = await fetch("", {
-			headers: { Authorization: `Bearer ${tokens.accessToken()}` },
-		});
+	const strategy = new OAuth2Strategy(
+		{
+			clientId: context.env.CLERK_CLIENT_ID,
+			clientSecret: context.env.CLERK_CLIENT_SECRET,
+			redirectURI: `${context.env.APP_URL}/auth/callback`,
+			authorizationEndpoint: `https://${context.env.CLERK_ISSUER}/oauth/authorize`,
+			tokenEndpoint: `https://${context.env.CLERK_ISSUER}/oauth/token`,
+			scopes: ["profile", "email"],
+		},
+		async ({ tokens, request }) => {
+			const response = await fetch(
+				`https://${context.env.CLERK_ISSUER}/oauth/userinfo`,
+				{
+					headers: { Authorization: `Bearer ${tokens.accessToken()}` },
+				},
+			);
 
-		const userInfo = (await response.json()) as ClerkUserInfo;
+			const userInfo = (await response.json()) as ClerkUserInfo;
 
-		return {
-			id: userInfo.user_id,
-			email: userInfo.email,
-			name: userInfo.name || userInfo.email || userInfo.user_id,
-			photo: userInfo.picture,
-			tokens: {
-				accessToken: tokens.accessToken(),
-				refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
-				tokenType: tokens.tokenType(),
-				expiresAt: tokens.accessTokenExpiresAt(),
-			},
-		};
-	},
-);
+			return {
+				id: userInfo.user_id,
+				email: userInfo.email,
+				name: userInfo.name || userInfo.email || userInfo.user_id,
+				photo: userInfo.picture,
+				tokens: {
+					accessToken: tokens.accessToken(),
+					refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
+					tokenType: tokens.tokenType(),
+					expiresAt: tokens.accessTokenExpiresAt(),
+				},
+			};
+		},
+	);
 
-authenticator.use(strategy, "clerk");
+	authenticator.use(strategy, "clerk");
+
+	return { authenticator, strategy };
+}
+
+// Helper functions that take context
+export function createRequireAuth(context: AppLoadContext) {
+	const { authenticator, strategy } = createAuthenticator(context);
+
+	return async function requireAuth(request: Request) {
+		try {
+			const user = await authenticator.authenticate("clerk", request);
+
+			if (
+				request.method === "GET" &&
+				user.tokens.refreshToken &&
+				isTokenExpiringSoon(user.tokens.expiresAt)
+			) {
+				const tokens = await strategy.refreshToken(user.tokens.refreshToken);
+				const sessionStorage = getSessionStorage(context);
+				const session = await sessionStorage.getSession(
+					request.headers.get("cookie"),
+				);
+
+				user.tokens = {
+					accessToken: tokens.accessToken(),
+					refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
+					tokenType: tokens.tokenType(),
+					expiresAt: tokens.accessTokenExpiresAt(),
+				};
+				session.set("user", user);
+
+				throw redirect(request.url, {
+					headers: {
+						"Set-Cookie": await sessionStorage.commitSession(session),
+					},
+				});
+			}
+			return user;
+		} catch (error) {
+			throw redirect("/login");
+		}
+	};
+}
+
+export function createTryAuth(context: AppLoadContext) {
+	const { authenticator } = createAuthenticator(context);
+
+	return async function tryAuth(request: Request) {
+		try {
+			return await authenticator.authenticate("clerk", request);
+		} catch (error) {
+			return null;
+		}
+	};
+}
 
 function isTokenExpiringSoon(expiresAt: Date): boolean {
 	const timeUntilExpiry = expiresAt.getTime() - Date.now();
 	const twentyMinutesInMs = 20 * 60 * 1000;
-
 	return timeUntilExpiry < twentyMinutesInMs;
-}
-
-export async function requireAuth(request: Request) {
-	try {
-		const user = await authenticator.authenticate("clerk", request);
-
-		if (
-			request.method === "GET" &&
-			user.tokens.refreshToken &&
-			isTokenExpiringSoon(user.tokens.expiresAt)
-		) {
-			const tokens = await strategy.refreshToken(user.tokens.refreshToken);
-
-			const session = await sessionStorage.getSession(
-				request.headers.get("cookie"),
-			);
-			user.tokens = {
-				accessToken: tokens.accessToken(),
-				refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
-				tokenType: tokens.tokenType(),
-				expiresAt: tokens.accessTokenExpiresAt(),
-			};
-			session.set("user", user);
-
-			throw redirect(request.url, {
-				headers: {
-					"Set-Cookie": await sessionStorage.commitSession(session),
-				},
-			});
-		}
-		return user;
-	} catch (error) {
-		throw redirect("/login");
-	}
-}
-
-export async function tryAuth(request: Request) {
-	try {
-		return await authenticator.authenticate("clerk", request);
-	} catch (error) {
-		return null;
-	}
 }
