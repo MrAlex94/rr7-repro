@@ -8,14 +8,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
 	return {
 		env: {
-			...context.cloudflare.env,
-			// Redact sensitive values
-			CLERK_SECRET_KEY: context.context.cloudflare.envCLERK_SECRET_KEY
-				? "[REDACTED]"
-				: undefined,
-			CLERK_SESSION_SECRET: context.context.cloudflare.envCLERK_SESSION_SECRET
-				? "[REDACTED]"
-				: undefined,
+			APP_URL: context.context.cloudflare.APP_URL,
 		},
 	};
 }
