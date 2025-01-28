@@ -8,7 +8,7 @@ export function getSessionStorage(context: AppLoadContext) {
 			sameSite: "lax",
 			path: "/",
 			httpOnly: true,
-			secrets: [context.env.CLERK_SESSION_SECRET],
+			secrets: [context.cloudflare.env.CLERK_SESSION_SECRET],
 			secure: process.env.NODE_ENV === "production",
 		},
 	});

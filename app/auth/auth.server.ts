@@ -29,16 +29,16 @@ export function createAuthenticator(context: AppLoadContext) {
 
 	const strategy = new OAuth2Strategy(
 		{
-			clientId: context.env.CLERK_CLIENT_ID,
-			clientSecret: context.env.CLERK_CLIENT_SECRET,
-			redirectURI: `${context.env.APP_URL}/auth/callback`,
-			authorizationEndpoint: `https://${context.env.CLERK_ISSUER}/oauth/authorize`,
-			tokenEndpoint: `https://${context.env.CLERK_ISSUER}/oauth/token`,
+			clientId: context.cloudflare.env.CLERK_CLIENT_ID,
+			clientSecret: context.cloudflare.env.CLERK_CLIENT_SECRET,
+			redirectURI: `${context.cloudflare.env.APP_URL}/auth/callback`,
+			authorizationEndpoint: `https://${context.cloudflare.env.CLERK_ISSUER}/oauth/authorize`,
+			tokenEndpoint: `https://${context.cloudflare.env.CLERK_ISSUER}/oauth/token`,
 			scopes: ["profile", "email"],
 		},
 		async ({ tokens, request }) => {
 			const response = await fetch(
-				`https://${context.env.CLERK_ISSUER}/oauth/userinfo`,
+				`https://${context.cloudflare.env.CLERK_ISSUER}/oauth/userinfo`,
 				{
 					headers: { Authorization: `Bearer ${tokens.accessToken()}` },
 				},

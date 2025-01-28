@@ -17,7 +17,7 @@ export async function loader(args: Route.LoaderArgs) {
 	}
 
 	const user = await createClerkClient({
-		secretKey: args.context.env.CLERK_SECRET_KEY,
+		secretKey: args.context.cloudflare.env.CLERK_SECRET_KEY,
 	}).users.getUser(userId);
 
 	return {

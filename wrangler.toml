@@ -1,12 +1,11 @@
 name = "repro"
-pages_build_output_dir = "build/client"
-compatibility_date = "2024-09-02"
-compatibility_flags = ["nodejs_compat"]
+main = "./build/server/index.js"
+assets = { directory = "./build/client/" }
+compatibility_date = "2024-11-11"
+workers_dev = true
 
 [vars]
-BUN_VERSION = "1.2.0"
-APP_URL = "http://localhost:5173/"
+APP_URL = "https://repro.waterfox.workers.dev"
 CLERK_CLIENT_ID = "ZW4PBZca4acsk0vR"
 CLERK_ISSUER = "civil-lemur-19.clerk.accounts.dev"
 CLERK_PUBLISHABLE_KEY = "pk_test_Y2l2aWwtbGVtdXItMTkuY2xlcmsuYWNjb3VudHMuZGV2JA"
-NODE_VERSION = "latest"

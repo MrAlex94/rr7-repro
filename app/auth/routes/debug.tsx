@@ -2,16 +2,18 @@ import { type LoaderFunctionArgs, useLoaderData } from "react-router";
 
 export async function loader({ context }: LoaderFunctionArgs) {
 	// Don't do this in production!
-	// if (process.env.NODE_ENV === 'production') {
+	// if (process.context.cloudflare.envNODE_ENV === 'production') {
 	//   throw new Error('Debug route not available in production');
 	// }
 
 	return {
 		env: {
-			...context.env,
+			...context.cloudflare.env,
 			// Redact sensitive values
-			CLERK_SECRET_KEY: context.env.CLERK_SECRET_KEY ? "[REDACTED]" : undefined,
-			CLERK_SESSION_SECRET: context.env.CLERK_SESSION_SECRET
+			CLERK_SECRET_KEY: context.context.cloudflare.envCLERK_SECRET_KEY
+				? "[REDACTED]"
+				: undefined,
+			CLERK_SESSION_SECRET: context.context.cloudflare.envCLERK_SESSION_SECRET
 				? "[REDACTED]"
 				: undefined,
 		},
